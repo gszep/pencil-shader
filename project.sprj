@@ -28,35 +28,52 @@
 			</variables>
 			<macros />
 		</pass>
+		<pass name="edges" type="shader" active="true" patchverts="1">
+			<shader type="vs" path="shaders/edges_vs.hlsl" entry="main" />
+			<shader type="ps" path="shaders/edges_ps.hlsl" entry="main" />
+			<inputlayout>
+				<item value="Position" semantic="POSITION" />
+				<item value="Texcoord" semantic="TEXCOORD0" />
+			</inputlayout>
+			<rendertexture name="edges" />
+			<items>
+				<item name="FullScreen" type="geometry">
+					<type>ScreenQuad</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<topology>TriangleList</topology>
+				</item>
+			</items>
+			<itemvalues />
+			<variables>
+				<variable type="float4x4" name="geometry_transform" system="GeometryTransform" />
+				<variable type="float4x4" name="orthographic" system="Orthographic" />
+			</variables>
+			<macros />
+		</pass>
 	</pipeline>
 	<objects>
-		<object type="rendertexture" name="normals" rsize="1.000000,1.000000" clear="true" />
+		<object type="rendertexture" name="normals" rsize="1.000000,1.000000" clear="true">
+			<bind slot="0" name="edges" />
+		</object>
 		<object type="rendertexture" name="depth" rsize="1.000000,1.000000" clear="true" />
+		<object type="rendertexture" name="edges" rsize="1.000000,1.000000" clear="true" />
+		<object type="buffer" name="pencils" size="0" format="float" pausedpreview="false" />
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="gbuffer" item="pipe" />
-		<entry type="file" name="gbuffer" shader="vs" />
-		<entry type="file" name="gbuffer" shader="ps" />
+		<entry type="property" name="edges" item="pipe" />
+		<entry type="file" name="edges" shader="vs" />
+		<entry type="file" name="edges" shader="ps" />
 		<entry type="camera" fp="false">
 			<distance>2</distance>
-			<pitch>-44</pitch>
-			<yaw>148</yaw>
+			<pitch>24</pitch>
+			<yaw>138</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
 		<entry type="usealpha" val="true" />
-		<entry type="vecwatch_expr" expr="camera_position" color_r="0.0274509806" color_g="0.701960802" color_b="0.643137276" />
-		<entry type="vecwatch_expr" expr="input.position" color_r="0.0117647061" color_g="0.0862745121" color_b="0.4627451" />
-		<entry type="bkpt" file="/home/gszep/Documents/repos/pencil-shader/shaders/gbuffer_ps.hlsl" line="30" use_cond="false" cond="" enabled="true" />
-		<entry type="bkpt" file="/home/gszep/Documents/repos/pencil-shader/shaders/gbuffer_ps.hlsl" line="29" use_cond="false" cond="" enabled="true" />
-		<entry type="bkpt" file="/home/gszep/Documents/repos/pencil-shader/shaders/gbuffer_ps.hlsl" line="28" use_cond="false" cond="" enabled="true" />
-		<entry type="bkpt" file="/home/gszep/Documents/repos/pencil-shader/shaders/gbuffer_ps.hlsl" line="27" use_cond="false" cond="" enabled="true" />
-		<entry type="bkpt" file="/home/gszep/Documents/repos/pencil-shader/shaders/gbuffer_ps.hlsl" line="26" use_cond="false" cond="" enabled="true" />
-		<entry type="bkpt" file="/home/gszep/Documents/repos/pencil-shader/shaders/gbuffer_ps.hlsl" line="25" use_cond="false" cond="" enabled="true" />
-		<entry type="bkpt" file="/home/gszep/Documents/repos/pencil-shader/shaders/gbuffer_ps.hlsl" line="24" use_cond="false" cond="" enabled="true" />
-		<entry type="bkpt" file="/home/gszep/Documents/repos/pencil-shader/shaders/gbuffer_vs.hlsl" line="36" use_cond="false" cond="" enabled="true" />
-		<entry type="bkpt" file="/home/gszep/Documents/repos/pencil-shader/shaders/gbuffer_vs.hlsl" line="35" use_cond="false" cond="" enabled="true" />
 	</settings>
 	<plugindata />
 </project>
