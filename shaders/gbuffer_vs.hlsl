@@ -25,9 +25,9 @@ gbuffer main(vertex input)
 
 	output.world_position = geometry_transform * float4(input.position, 1.0);
 	output.screen_position = view_projection * output.world_position;
-	
+
 	output.normal = float4(abs(input.normal), 1);
-    output.depth = dot(normalize(output.world_position.xyz),normalize(camera_position));
+	output.depth = dot(normalize(output.world_position.xyz), normalize(camera_position));
 
 	return output;
 }

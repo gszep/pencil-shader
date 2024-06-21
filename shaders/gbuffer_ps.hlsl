@@ -16,6 +16,6 @@ render_targets main(gbuffer input)
 {
 	render_targets output;
 	output.normal = input.normal;
-    output.depth = input.depth;
+	output.depth = input.depth;
 	return output;
 }
