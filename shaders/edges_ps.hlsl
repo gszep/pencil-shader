@@ -1,3 +1,8 @@
+cbuffer variables : register(b0)
+{
+	float2 viewport_size;
+};
+
 struct screen
 {
 	float4 position : SV_POSITION;
@@ -12,21 +17,16 @@ struct render_targets
 	float4 edges : SV_TARGET0;
 };
 
+static const float2 delta = 5.0 / viewport_size;
+static const float2 du = float2(delta.x, 0);
+static const float2 dv = float2(0, delta.y);
+
 float is_edge(float2 uv)
 {
-	float3 normal = normals.Sample(state, uv).xyz;
-	float3 normal_x = normals.Sample(state, uv + float2(0.01, 0)).xyz;
-	float3 normal_y = normals.Sample(state, uv + float2(0, 0.01)).xyz;
+	float edge_u = dot(normals.Sample(state, uv + du).xyz, normals.Sample(state, uv - du).xyz);
+	float edge_v = dot(normals.Sample(state, uv + dv).xyz, normals.Sample(state, uv - dv).xyz);
 
-	float3 edge_x = abs(normal - normal_x);
-	float3 edge_y = abs(normal - normal_y);
-
-	float3 edge = edge_x + edge_y;
-	float3 edge_threshold = 0.01;
-
-	float3 edge_result = step(edge_threshold, edge);
-
-	return dot(edge_result, float3(1, 1, 1)) / 3;
+	return edge_u < 0.5 || edge_v < 0.5;
 }
 
 render_targets main(screen input)
