@@ -37,7 +37,7 @@
 			</inputlayout>
 			<rendertexture name="edges" />
 			<items>
-				<item name="screen" type="geometry">
+				<item name="view_edges" type="geometry">
 					<type>ScreenQuad</type>
 					<width>1</width>
 					<height>1</height>
@@ -57,9 +57,41 @@
 				</variable>
 				<variable type="float" name="threshold">
 					<row>
-						<value>0.8</value>
+						<value>0.800000012</value>
 					</row>
 				</variable>
+			</variables>
+			<macros />
+		</pass>
+		<pass name="pencils" type="compute" active="true">
+			<shader type="cs" path="shaders/pencils_cs.hlsl" entry="main" />
+			<groupsize x="512" y="1" z="1" />
+			<variables>
+				<variable type="float" name="delta" system="TimeDelta" />
+			</variables>
+			<macros />
+		</pass>
+		<pass name="postprocessing" type="shader" active="true" patchverts="1">
+			<shader type="vs" path="shaders/postprocessing_vs.hlsl" entry="main" />
+			<shader type="ps" path="shaders/postprocessing_ps.hlsl" entry="main" />
+			<inputlayout>
+				<item value="Position" semantic="POSITION" />
+				<item value="Texcoord" semantic="TEXCOORD0" />
+			</inputlayout>
+			<rendertexture />
+			<items>
+				<item name="view_postprocessing" type="geometry">
+					<type>ScreenQuad</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<topology>TriangleList</topology>
+				</item>
+			</items>
+			<itemvalues />
+			<variables>
+				<variable type="float4x4" name="orthographic" system="Orthographic" />
+				<variable type="float4x4" name="geometry_transform" system="GeometryTransform" />
 			</variables>
 			<macros />
 		</pass>
@@ -67,22 +99,30 @@
 	<objects>
 		<object type="rendertexture" name="normals" rsize="1.000000,1.000000" clear="true">
 			<bind slot="0" name="edges" />
+			<bind slot="0" name="postprocessing" />
 		</object>
-		<object type="rendertexture" name="depth" rsize="1.000000,1.000000" clear="true" />
-		<object type="rendertexture" name="edges" rsize="1.000000,1.000000" clear="true" />
-		<object type="buffer" name="pencils" size="0" format="float" pausedpreview="false" />
+		<object type="rendertexture" name="depth" rsize="1.000000,1.000000" clear="true">
+			<bind slot="1" name="postprocessing" />
+		</object>
+		<object type="rendertexture" name="edges" rsize="1.000000,1.000000" clear="true">
+			<bind slot="2" name="postprocessing" />
+		</object>
+		<object type="buffer" name="pencils" size="160" format="float2; float2" pausedpreview="false">
+			<bind slot="0" name="pencils" />
+		</object>
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="screen" item="pipe" />
-		<entry type="file" name="gbuffer" shader="vs" />
-		<entry type="file" name="gbuffer" shader="ps" />
+		<entry type="property" name="pencils" item="pipe" />
+		<entry type="file" name="postprocessing" shader="vs" />
+		<entry type="file" name="postprocessing" shader="ps" />
+		<entry type="file" name="pencils" shader="cs" />
 		<entry type="pinned" name="thickness" owner="edges" />
 		<entry type="pinned" name="threshold" owner="edges" />
 		<entry type="camera" fp="false">
 			<distance>3</distance>
-			<pitch>51</pitch>
-			<yaw>310</yaw>
+			<pitch>29</pitch>
+			<yaw>341</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
