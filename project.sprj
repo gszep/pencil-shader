@@ -63,11 +63,21 @@
 			</variables>
 			<macros />
 		</pass>
-		<pass name="pencils" type="compute" active="true">
+		<pass name="pencils_update" type="compute" active="true">
 			<shader type="cs" path="shaders/pencils_cs.hlsl" entry="main" />
 			<groupsize x="512" y="1" z="1" />
 			<variables>
 				<variable type="float" name="delta" system="TimeDelta" />
+				<variable type="int" name="width">
+					<row>
+						<value>512</value>
+					</row>
+				</variable>
+				<variable type="int" name="height">
+					<row>
+						<value>512</value>
+					</row>
+				</variable>
 			</variables>
 			<macros />
 		</pass>
@@ -107,22 +117,25 @@
 		<object type="rendertexture" name="edges" rsize="1.000000,1.000000" clear="true">
 			<bind slot="2" name="postprocessing" />
 		</object>
-		<object type="buffer" name="pencils" size="160" format="float2; float2" pausedpreview="false">
-			<bind slot="0" name="pencils" />
+		<object type="buffer" name="pencils" size="16" format="float2;float2;" pausedpreview="false">
+			<bind slot="0" name="pencils_update" />
+		</object>
+		<object type="image" name="traces" width="32" height="32" format="R32G32B32A32_FLOAT">
+			<bind slot="1" name="pencils_update" uav="1" />
 		</object>
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="pencils" item="pipe" />
-		<entry type="file" name="postprocessing" shader="vs" />
-		<entry type="file" name="postprocessing" shader="ps" />
-		<entry type="file" name="pencils" shader="cs" />
+		<entry type="property" name="traces" item="image" />
+		<entry type="file" name="pencils_update" shader="cs" />
 		<entry type="pinned" name="thickness" owner="edges" />
 		<entry type="pinned" name="threshold" owner="edges" />
+		<entry type="pinned" name="width" owner="pencils_update" />
+		<entry type="pinned" name="height" owner="pencils_update" />
 		<entry type="camera" fp="false">
-			<distance>3</distance>
-			<pitch>29</pitch>
-			<yaw>341</yaw>
+			<distance>4</distance>
+			<pitch>-89</pitch>
+			<yaw>219</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
