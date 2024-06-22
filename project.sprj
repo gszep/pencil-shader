@@ -37,7 +37,7 @@
 			</inputlayout>
 			<rendertexture name="edges" />
 			<items>
-				<item name="FullScreen" type="geometry">
+				<item name="screen" type="geometry">
 					<type>ScreenQuad</type>
 					<width>1</width>
 					<height>1</height>
@@ -49,6 +49,17 @@
 			<variables>
 				<variable type="float4x4" name="geometry_transform" system="GeometryTransform" />
 				<variable type="float4x4" name="orthographic" system="Orthographic" />
+				<variable type="float2" name="viewport_size" system="ViewportSize" />
+				<variable type="float" name="thickness">
+					<row>
+						<value>3</value>
+					</row>
+				</variable>
+				<variable type="float" name="threshold">
+					<row>
+						<value>0.8</value>
+					</row>
+				</variable>
 			</variables>
 			<macros />
 		</pass>
@@ -63,13 +74,15 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="edges" item="pipe" />
-		<entry type="file" name="edges" shader="vs" />
-		<entry type="file" name="edges" shader="ps" />
+		<entry type="property" name="screen" item="pipe" />
+		<entry type="file" name="gbuffer" shader="vs" />
+		<entry type="file" name="gbuffer" shader="ps" />
+		<entry type="pinned" name="thickness" owner="edges" />
+		<entry type="pinned" name="threshold" owner="edges" />
 		<entry type="camera" fp="false">
-			<distance>2</distance>
-			<pitch>24</pitch>
-			<yaw>138</yaw>
+			<distance>3</distance>
+			<pitch>51</pitch>
+			<yaw>310</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
