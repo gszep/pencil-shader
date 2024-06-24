@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project version="2">
 	<pipeline>
-		<pass name="gbuffer" type="shader" active="true" patchverts="1">
+		<pass name="gbuffer" type="shader" active="false" patchverts="1">
 			<shader type="vs" path="shaders/gbuffer_vs.hlsl" entry="main" />
 			<shader type="ps" path="shaders/gbuffer_ps.hlsl" entry="main" />
 			<inputlayout>
@@ -28,7 +28,7 @@
 			</variables>
 			<macros />
 		</pass>
-		<pass name="edges" type="shader" active="true" patchverts="1">
+		<pass name="edges" type="shader" active="false" patchverts="1">
 			<shader type="vs" path="shaders/edges_vs.hlsl" entry="main" />
 			<shader type="ps" path="shaders/edges_ps.hlsl" entry="main" />
 			<inputlayout>
@@ -65,23 +65,23 @@
 		</pass>
 		<pass name="pencils_update" type="compute" active="true">
 			<shader type="cs" path="shaders/pencils_cs.hlsl" entry="main" />
-			<groupsize x="512" y="1" z="1" />
+			<groupsize x="2" y="1" z="1" />
 			<variables>
 				<variable type="float" name="delta" system="TimeDelta" />
 				<variable type="int" name="width">
 					<row>
-						<value>512</value>
+						<value>128</value>
 					</row>
 				</variable>
 				<variable type="int" name="height">
 					<row>
-						<value>512</value>
+						<value>128</value>
 					</row>
 				</variable>
 			</variables>
 			<macros />
 		</pass>
-		<pass name="postprocessing" type="shader" active="true" patchverts="1">
+		<pass name="postprocessing" type="shader" active="false" patchverts="1">
 			<shader type="vs" path="shaders/postprocessing_vs.hlsl" entry="main" />
 			<shader type="ps" path="shaders/postprocessing_ps.hlsl" entry="main" />
 			<inputlayout>
@@ -109,19 +109,20 @@
 	<objects>
 		<object type="rendertexture" name="normals" rsize="1.000000,1.000000" clear="true">
 			<bind slot="0" name="edges" />
-			<bind slot="0" name="postprocessing" />
-		</object>
-		<object type="rendertexture" name="depth" rsize="1.000000,1.000000" clear="true">
 			<bind slot="1" name="postprocessing" />
 		</object>
-		<object type="rendertexture" name="edges" rsize="1.000000,1.000000" clear="true">
+		<object type="rendertexture" name="depth" rsize="1.000000,1.000000" clear="true">
 			<bind slot="2" name="postprocessing" />
 		</object>
-		<object type="buffer" name="pencils" size="16" format="float2;float2;" pausedpreview="false">
+		<object type="rendertexture" name="edges" rsize="1.000000,1.000000" clear="true">
+			<bind slot="3" name="postprocessing" />
+		</object>
+		<object type="buffer" name="pencils" size="512" format="float2;float2;" pausedpreview="false">
 			<bind slot="0" name="pencils_update" />
 		</object>
-		<object type="image" name="traces" width="32" height="32" format="R32G32B32A32_FLOAT">
+		<object type="image" name="traces" width="128" height="128" format="R32G32B32A32_FLOAT">
 			<bind slot="1" name="pencils_update" uav="1" />
+			<bind slot="0" name="postprocessing" uav="0" />
 		</object>
 	</objects>
 	<cameras />
@@ -133,9 +134,9 @@
 		<entry type="pinned" name="width" owner="pencils_update" />
 		<entry type="pinned" name="height" owner="pencils_update" />
 		<entry type="camera" fp="false">
-			<distance>4</distance>
-			<pitch>-89</pitch>
-			<yaw>219</yaw>
+			<distance>3</distance>
+			<pitch>-33</pitch>
+			<yaw>211</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
