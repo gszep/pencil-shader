@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project version="2">
 	<pipeline>
-		<pass name="gbuffer" type="shader" active="false" patchverts="1">
+		<pass name="gbuffer" type="shader" active="true" patchverts="1">
 			<shader type="vs" path="shaders/gbuffer_vs.hlsl" entry="main" />
 			<shader type="ps" path="shaders/gbuffer_ps.hlsl" entry="main" />
 			<inputlayout>
@@ -28,7 +28,7 @@
 			</variables>
 			<macros />
 		</pass>
-		<pass name="edges" type="shader" active="false" patchverts="1">
+		<pass name="edges" type="shader" active="true" patchverts="1">
 			<shader type="vs" path="shaders/edges_vs.hlsl" entry="main" />
 			<shader type="ps" path="shaders/edges_ps.hlsl" entry="main" />
 			<inputlayout>
@@ -50,12 +50,12 @@
 				<variable type="float4x4" name="geometry_transform" system="GeometryTransform" />
 				<variable type="float4x4" name="orthographic" system="Orthographic" />
 				<variable type="float2" name="viewport_size" system="ViewportSize" />
-				<variable type="float" name="thickness">
+				<variable type="float" name="edge_thickness">
 					<row>
-						<value>3</value>
+						<value>6.0999999</value>
 					</row>
 				</variable>
-				<variable type="float" name="threshold">
+				<variable type="float" name="edge_threshold">
 					<row>
 						<value>0.800000012</value>
 					</row>
@@ -83,6 +83,27 @@
 						<value>32</value>
 					</row>
 				</variable>
+				<variable type="float" name="pencil_radius">
+					<row>
+						<value>1.61000001</value>
+					</row>
+				</variable>
+				<variable type="float" name="speed">
+					<row>
+						<value>70</value>
+					</row>
+				</variable>
+				<variable type="float" name="time" system="Time" />
+				<variable type="float" name="omega">
+					<row>
+						<value>0.5</value>
+					</row>
+				</variable>
+				<variable type="float" name="domega">
+					<row>
+						<value>0.785000026</value>
+					</row>
+				</variable>
 			</variables>
 			<macros />
 		</pass>
@@ -103,13 +124,13 @@
 				<variable type="float" name="delta" system="TimeDelta" />
 				<variable type="float" name="evaporation">
 					<row>
-						<value>0.100000001</value>
+						<value>1.29999995</value>
 					</row>
 				</variable>
 			</variables>
 			<macros />
 		</pass>
-		<pass name="postprocessing" type="shader" active="false" patchverts="1">
+		<pass name="postprocessing" type="shader" active="true" patchverts="1">
 			<shader type="vs" path="shaders/postprocessing_vs.hlsl" entry="main" />
 			<shader type="ps" path="shaders/postprocessing_ps.hlsl" entry="main" />
 			<inputlayout>
@@ -135,17 +156,20 @@
 		</pass>
 	</pipeline>
 	<objects>
-		<object type="rendertexture" name="normals" rsize="1.000000,1.000000" clear="true">
+		<object type="rendertexture" name="normals" format="R32G32B32A32_FLOAT" rsize="1.000000,1.000000" clear="true">
 			<bind slot="0" name="edges" />
+			<bind slot="1" name="pencils_update" />
 			<bind slot="1" name="postprocessing" />
 		</object>
-		<object type="rendertexture" name="depth" rsize="1.000000,1.000000" clear="true">
+		<object type="rendertexture" name="depth" format="R32G32B32A32_FLOAT" rsize="1.000000,1.000000" clear="true">
+			<bind slot="1" name="edges" />
 			<bind slot="2" name="postprocessing" />
 		</object>
-		<object type="rendertexture" name="edges" rsize="1.000000,1.000000" clear="true">
+		<object type="rendertexture" name="edges" format="R32G32B32A32_FLOAT" rsize="1.000000,1.000000" clear="true">
+			<bind slot="0" name="pencils_update" />
 			<bind slot="3" name="postprocessing" />
 		</object>
-		<object type="buffer" name="pencils" size="512" format="float2;float2;" pausedpreview="false">
+		<object type="buffer" name="pencils" size="512" format="float2;float;" pausedpreview="false">
 			<bind slot="0" name="pencils_update" />
 		</object>
 		<object type="image" name="traces" width="128" height="128" format="R32G32B32A32_FLOAT">
@@ -156,17 +180,19 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="traces" item="image" />
-		<entry type="file" name="pencils_update" shader="cs" />
-		<entry type="file" name="traces_update" shader="cs" />
-		<entry type="pinned" name="thickness" owner="edges" />
-		<entry type="pinned" name="threshold" owner="edges" />
+		<entry type="property" name="postprocessing" item="pipe" />
+		<entry type="pinned" name="edge_thickness" owner="edges" />
+		<entry type="pinned" name="edge_threshold" owner="edges" />
 		<entry type="pinned" name="num_pencils" owner="pencils_update" />
 		<entry type="pinned" name="evaporation" owner="traces_update" />
+		<entry type="pinned" name="pencil_radius" owner="pencils_update" />
+		<entry type="pinned" name="speed" owner="pencils_update" />
+		<entry type="pinned" name="omega" owner="pencils_update" />
+		<entry type="pinned" name="domega" owner="pencils_update" />
 		<entry type="camera" fp="false">
-			<distance>3</distance>
-			<pitch>-33</pitch>
-			<yaw>211</yaw>
+			<distance>5</distance>
+			<pitch>40</pitch>
+			<yaw>329</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

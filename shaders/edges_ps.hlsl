@@ -1,8 +1,8 @@
 cbuffer variables : register(b0)
 {
 	float2 viewport_size;
-	float thickness;
-	float threshold;
+	float edge_thickness;
+	float edge_threshold;
 };
 
 struct screen
@@ -19,7 +19,7 @@ struct render_targets
 	float4 edges : SV_TARGET0;
 };
 
-static const float2 delta = thickness / viewport_size;
+static const float2 delta = edge_thickness / viewport_size;
 static const float2 du = float2(delta.x, 0);
 static const float2 dv = float2(0, delta.y);
 
@@ -41,7 +41,7 @@ float is_edge(float2 uv)
 	float edge_u = dot(normalize(du1), normalize(du2));
 	float edge_v = dot(normalize(dv1), normalize(dv2));
 
-	return edge_u < threshold || edge_v < threshold;
+	return edge_u < edge_threshold || edge_v < edge_threshold;
 }
 
 render_targets main(screen input)
