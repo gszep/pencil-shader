@@ -78,6 +78,34 @@
 						<value>128</value>
 					</row>
 				</variable>
+				<variable type="int" name="num_pencils">
+					<row>
+						<value>32</value>
+					</row>
+				</variable>
+			</variables>
+			<macros />
+		</pass>
+		<pass name="traces_update" type="compute" active="true">
+			<shader type="cs" path="shaders/traces_cs.hlsl" entry="main" />
+			<groupsize x="16" y="16" z="1" />
+			<variables>
+				<variable type="int" name="width">
+					<row>
+						<value>128</value>
+					</row>
+				</variable>
+				<variable type="int" name="height">
+					<row>
+						<value>128</value>
+					</row>
+				</variable>
+				<variable type="float" name="delta" system="TimeDelta" />
+				<variable type="float" name="evaporation">
+					<row>
+						<value>0.100000001</value>
+					</row>
+				</variable>
 			</variables>
 			<macros />
 		</pass>
@@ -122,6 +150,7 @@
 		</object>
 		<object type="image" name="traces" width="128" height="128" format="R32G32B32A32_FLOAT">
 			<bind slot="1" name="pencils_update" uav="1" />
+			<bind slot="0" name="traces_update" uav="1" />
 			<bind slot="0" name="postprocessing" uav="0" />
 		</object>
 	</objects>
@@ -129,10 +158,11 @@
 	<settings>
 		<entry type="property" name="traces" item="image" />
 		<entry type="file" name="pencils_update" shader="cs" />
+		<entry type="file" name="traces_update" shader="cs" />
 		<entry type="pinned" name="thickness" owner="edges" />
 		<entry type="pinned" name="threshold" owner="edges" />
-		<entry type="pinned" name="width" owner="pencils_update" />
-		<entry type="pinned" name="height" owner="pencils_update" />
+		<entry type="pinned" name="num_pencils" owner="pencils_update" />
+		<entry type="pinned" name="evaporation" owner="traces_update" />
 		<entry type="camera" fp="false">
 			<distance>3</distance>
 			<pitch>-33</pitch>
