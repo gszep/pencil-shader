@@ -85,18 +85,18 @@
 				</variable>
 				<variable type="float" name="pencil_radius">
 					<row>
-						<value>1.61000001</value>
+						<value>21.0900002</value>
 					</row>
 				</variable>
 				<variable type="float" name="speed">
 					<row>
-						<value>70</value>
+						<value>76.6100006</value>
 					</row>
 				</variable>
 				<variable type="float" name="time" system="Time" />
 				<variable type="float" name="omega">
 					<row>
-						<value>0.5</value>
+						<value>3.75999999</value>
 					</row>
 				</variable>
 				<variable type="float" name="domega">
@@ -162,7 +162,6 @@
 			<bind slot="1" name="postprocessing" />
 		</object>
 		<object type="rendertexture" name="depth" format="R32G32B32A32_FLOAT" rsize="1.000000,1.000000" clear="true">
-			<bind slot="1" name="edges" />
 			<bind slot="2" name="postprocessing" />
 		</object>
 		<object type="rendertexture" name="edges" format="R32G32B32A32_FLOAT" rsize="1.000000,1.000000" clear="true">
@@ -180,7 +179,6 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="postprocessing" item="pipe" />
 		<entry type="pinned" name="edge_thickness" owner="edges" />
 		<entry type="pinned" name="edge_threshold" owner="edges" />
 		<entry type="pinned" name="num_pencils" owner="pencils_update" />
@@ -190,9 +188,9 @@
 		<entry type="pinned" name="omega" owner="pencils_update" />
 		<entry type="pinned" name="domega" owner="pencils_update" />
 		<entry type="camera" fp="false">
-			<distance>5</distance>
-			<pitch>40</pitch>
-			<yaw>329</yaw>
+			<distance>3</distance>
+			<pitch>22</pitch>
+			<yaw>276</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

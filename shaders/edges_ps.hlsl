@@ -19,9 +19,9 @@ struct render_targets
 	float4 edges : SV_TARGET0;
 };
 
-static const float2 delta = edge_thickness / viewport_size;
-static const float2 du = float2(delta.x, 0);
-static const float2 dv = float2(0, delta.y);
+static const float2 d = 1 / viewport_size;
+static const float2 du = float2(d.x, 0);
+static const float2 dv = float2(0, d.y);
 
 float is_edge(float2 uv)
 {
@@ -42,13 +42,35 @@ float is_edge(float2 uv)
 	float edge_v = dot(normalize(dv1), normalize(dv2));
 
 	return edge_u < edge_threshold || edge_v < edge_threshold;
-}
+};
+
+float gauss(float sigma, int x, int y)
+{
+	return exp(-(x * x + y * y) / (2 * sigma * sigma));
+};
+
+float4 gaussian_blur(Texture2D tex, float2 uv, float sigma = 5.0)
+{
+	float4 color = 0;
+	float normalisation = 0;
+
+	for (int i = -7; i <= 7; i++)
+	{
+		for (int j = -7; j <= 7; j++)
+		{
+			float weight = gauss(sigma, i, j);
+			color += tex.Sample(state, uv + float2(i, j) * d) * weight;
+			normalisation += weight;
+		}
+	}
+	return color / normalisation;
+};
 
 render_targets main(screen input)
 {
 	render_targets output;
 	input.uv.y = 1 - input.uv.y;
 
-	output.edges = is_edge(input.uv);
+	output.edges = gaussian_blur(normals, input.uv);
 	return output;
 }

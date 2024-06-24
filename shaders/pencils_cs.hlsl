@@ -47,9 +47,9 @@ float random_uniform(uint state)
 
 float4 gradient(Texture2D<float4> E, float2 uv, float2 direction)
 {
-	float4 dEu = E.Sample(sampling_state, uv + du) - E.Sample(sampling_state, uv - du) / (2 * d.x);
-	float4 dEv = E.Sample(sampling_state, uv + dv) - E.Sample(sampling_state, uv - dv) / (2 * d.y);
-	return direction[0] * dEu + direction[1] * dEv;
+	float4 dEu = E.Sample(sampling_state, uv + du) - E.Sample(sampling_state, uv - du);
+	float4 dEv = E.Sample(sampling_state, uv + dv) - E.Sample(sampling_state, uv - dv);
+	return dEu * direction[0] + dEv * direction[1];
 }
 
 Pencil move(Pencil pencil, uint state)
@@ -58,12 +58,12 @@ Pencil move(Pencil pencil, uint state)
 	float2 uv = d * pencil.position;
 	float random = random_uniform(state) * 2 - 1;
 
-	float dF = gradient(edges, uv, float2(cos(pencil.angle + domega), sin(pencil.angle + domega))) - gradient(edges, uv, float2(cos(pencil.angle - domega), sin(pencil.angle - domega)));
-	pencil.angle += dF.x * delta;
+	// float dF = gradient(edges, uv, float2(cos(pencil.angle + domega), sin(pencil.angle + domega))) - gradient(edges, uv, float2(cos(pencil.angle - domega), sin(pencil.angle - domega)));
+	// pencil.angle += dF.x * delta;
 
 	float2 velocity = float2(cos(pencil.angle), sin(pencil.angle));
 	pencil.position += speed * velocity * delta;
-	// pencil.angle += omega * random * delta;
+	pencil.angle += omega * random * delta;
 
 	//  float sensorAngle = agent.angle + sensorAngleOffset;
 	//  float2 sensorDir = float2(cos(sensorAngle), sin(sensorAngle));
@@ -100,7 +100,7 @@ void draw(Pencil pencil)
 			if (length(p - pencil.position) < pencil_radius)
 			{
 				float2 uv = p / float2(width, height);
-				float4 color = normals.Sample(sampling_state, uv);
+				float4 color = length(gradient(edges, uv, float2(1, 1)));
 
 				color.a = 1;
 				traces[p] = color;
