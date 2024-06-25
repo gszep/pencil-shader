@@ -52,7 +52,7 @@
 				<variable type="float2" name="viewport_size" system="ViewportSize" />
 				<variable type="float" name="edge_thickness">
 					<row>
-						<value>10.1400003</value>
+						<value>12.5500002</value>
 					</row>
 				</variable>
 			</variables>
@@ -60,43 +60,43 @@
 		</pass>
 		<pass name="pencils_update" type="compute" active="true">
 			<shader type="cs" path="shaders/pencils_cs.hlsl" entry="main" />
-			<groupsize x="2" y="1" z="1" />
+			<groupsize x="20" y="1" z="1" />
 			<variables>
 				<variable type="float" name="delta" system="TimeDelta" />
 				<variable type="int" name="width">
 					<row>
-						<value>128</value>
+						<value>512</value>
 					</row>
 				</variable>
 				<variable type="int" name="height">
 					<row>
-						<value>128</value>
+						<value>512</value>
 					</row>
 				</variable>
 				<variable type="int" name="num_pencils">
 					<row>
-						<value>32</value>
+						<value>400</value>
 					</row>
 				</variable>
 				<variable type="float" name="pencil_radius">
 					<row>
-						<value>1.98000002</value>
+						<value>1.75</value>
 					</row>
 				</variable>
 				<variable type="float" name="speed">
 					<row>
-						<value>76.6100006</value>
+						<value>98.4700012</value>
 					</row>
 				</variable>
 				<variable type="float" name="time" system="Time" />
 				<variable type="float" name="omega">
 					<row>
-						<value>2.32999992</value>
+						<value>7.57999992</value>
 					</row>
 				</variable>
 				<variable type="float" name="domega">
 					<row>
-						<value>0.0949999988</value>
+						<value>8.14500046</value>
 					</row>
 				</variable>
 			</variables>
@@ -104,22 +104,22 @@
 		</pass>
 		<pass name="traces_update" type="compute" active="true">
 			<shader type="cs" path="shaders/traces_cs.hlsl" entry="main" />
-			<groupsize x="16" y="16" z="1" />
+			<groupsize x="64" y="64" z="1" />
 			<variables>
 				<variable type="int" name="width">
 					<row>
-						<value>128</value>
+						<value>512</value>
 					</row>
 				</variable>
 				<variable type="int" name="height">
 					<row>
-						<value>128</value>
+						<value>512</value>
 					</row>
 				</variable>
 				<variable type="float" name="delta" system="TimeDelta" />
 				<variable type="float" name="evaporation">
 					<row>
-						<value>1.29999995</value>
+						<value>0.600000024</value>
 					</row>
 				</variable>
 			</variables>
@@ -163,10 +163,10 @@
 			<bind slot="0" name="pencils_update" />
 			<bind slot="3" name="postprocessing" />
 		</object>
-		<object type="buffer" name="pencils" size="512" format="float2;float;" pausedpreview="false">
+		<object type="buffer" name="pencils" size="5120" format="float2;float;" pausedpreview="false">
 			<bind slot="0" name="pencils_update" />
 		</object>
-		<object type="image" name="traces" width="128" height="128" format="R32G32B32A32_FLOAT">
+		<object type="image" name="traces" width="512" height="512" format="R32G32B32A32_FLOAT">
 			<bind slot="1" name="pencils_update" uav="1" />
 			<bind slot="0" name="traces_update" uav="1" />
 			<bind slot="0" name="postprocessing" uav="0" />
@@ -174,7 +174,6 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="pencils_update" item="pipe" />
 		<entry type="pinned" name="edge_thickness" owner="edges" />
 		<entry type="pinned" name="num_pencils" owner="pencils_update" />
 		<entry type="pinned" name="evaporation" owner="traces_update" />
@@ -183,9 +182,9 @@
 		<entry type="pinned" name="omega" owner="pencils_update" />
 		<entry type="pinned" name="domega" owner="pencils_update" />
 		<entry type="camera" fp="false">
-			<distance>2</distance>
-			<pitch>42</pitch>
-			<yaw>239</yaw>
+			<distance>4</distance>
+			<pitch>28</pitch>
+			<yaw>309</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

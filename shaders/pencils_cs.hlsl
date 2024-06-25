@@ -65,8 +65,10 @@ float follow(Pencil pencil, Texture2D signal)
 Pencil move(Pencil pencil, uint state)
 {
 
+	float random = 2 * random_uniform(state) - 1;
 	float turn_angle = follow(pencil, edges);
 	pencil.angle += turn_angle * delta;
+	pencil.angle += omega * random * delta;
 
 	float2 velocity = float2(cos(pencil.angle), sin(pencil.angle));
 	pencil.position += speed * velocity * delta;
