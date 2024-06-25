@@ -45,48 +45,32 @@ float random_uniform(uint state)
 	return state / 4294967295.0;
 }
 
-float4 gradient(Texture2D<float4> E, float2 uv, float2 direction)
+float follow(Pencil pencil, Texture2D signal)
 {
-	float4 dEu = E.Sample(sampling_state, uv + du) - E.Sample(sampling_state, uv - du);
-	float4 dEv = E.Sample(sampling_state, uv + dv) - E.Sample(sampling_state, uv - dv);
-	return dEu * direction[0] + dEv * direction[1];
+	float2 uv = d * pencil.position;
+
+	float gradient = 0;
+	for (float angle = 0.0; angle <= 0.785; angle += 0.1)
+	{
+		for (int r = 1; r <= 5; r++)
+		{
+			gradient += signal.Sample(sampling_state, uv + r * float2(cos(pencil.angle + angle), sin(pencil.angle + angle)) * d);
+			gradient -= signal.Sample(sampling_state, uv + r * float2(cos(pencil.angle - angle), sin(pencil.angle - angle)) * d);
+		}
+	}
+
+	return gradient;
 }
 
 Pencil move(Pencil pencil, uint state)
 {
 
-	float2 uv = d * pencil.position;
-	float random = random_uniform(state) * 2 - 1;
-
-	// float dF = gradient(edges, uv, float2(cos(pencil.angle + domega), sin(pencil.angle + domega))) - gradient(edges, uv, float2(cos(pencil.angle - domega), sin(pencil.angle - domega)));
-	// pencil.angle += dF.x * delta;
+	float turn_angle = follow(pencil, edges);
+	pencil.angle += turn_angle * delta;
 
 	float2 velocity = float2(cos(pencil.angle), sin(pencil.angle));
 	pencil.position += speed * velocity * delta;
-	pencil.angle += omega * random * delta;
 
-	//  float sensorAngle = agent.angle + sensorAngleOffset;
-	//  float2 sensorDir = float2(cos(sensorAngle), sin(sensorAngle));
-
-	// float2 sensorPos = agent.position + sensorDir * settings.sensorOffsetDst;
-	// int sensorCentreX = (int)sensorPos.x;
-	// int sensorCentreY = (int)sensorPos.y;
-
-	// float sum = 0;
-
-	// int4 senseWeight = agent.speciesMask * 2 - 1;
-
-	// for (int offsetX = -settings.sensorSize; offsetX <= settings.sensorSize; offsetX++)
-	// {
-	// 	for (int offsetY = -settings.sensorSize; offsetY <= settings.sensorSize; offsetY++)
-	// 	{
-	// 		int sampleX = min(width - 1, max(0, sensorCentreX + offsetX));
-	// 		int sampleY = min(height - 1, max(0, sensorCentreY + offsetY));
-	// 		sum += dot(senseWeight, TrailMap[int2(sampleX, sampleY)]);
-	// 	}
-	// }
-
-	// return sum;
 	return pencil;
 }
 
@@ -100,10 +84,7 @@ void draw(Pencil pencil)
 			if (length(p - pencil.position) < pencil_radius)
 			{
 				float2 uv = p / float2(width, height);
-				float4 color = length(gradient(edges, uv, float2(1, 1)));
-
-				color.a = 1;
-				traces[p] = color;
+				traces[p] = 1;
 			}
 		}
 	}

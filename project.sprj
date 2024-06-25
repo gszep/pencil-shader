@@ -52,12 +52,7 @@
 				<variable type="float2" name="viewport_size" system="ViewportSize" />
 				<variable type="float" name="edge_thickness">
 					<row>
-						<value>6.0999999</value>
-					</row>
-				</variable>
-				<variable type="float" name="edge_threshold">
-					<row>
-						<value>0.800000012</value>
+						<value>10.1400003</value>
 					</row>
 				</variable>
 			</variables>
@@ -85,7 +80,7 @@
 				</variable>
 				<variable type="float" name="pencil_radius">
 					<row>
-						<value>21.0900002</value>
+						<value>1.98000002</value>
 					</row>
 				</variable>
 				<variable type="float" name="speed">
@@ -96,12 +91,12 @@
 				<variable type="float" name="time" system="Time" />
 				<variable type="float" name="omega">
 					<row>
-						<value>3.75999999</value>
+						<value>2.32999992</value>
 					</row>
 				</variable>
 				<variable type="float" name="domega">
 					<row>
-						<value>0.785000026</value>
+						<value>0.0949999988</value>
 					</row>
 				</variable>
 			</variables>
@@ -179,8 +174,8 @@
 	</objects>
 	<cameras />
 	<settings>
+		<entry type="property" name="pencils_update" item="pipe" />
 		<entry type="pinned" name="edge_thickness" owner="edges" />
-		<entry type="pinned" name="edge_threshold" owner="edges" />
 		<entry type="pinned" name="num_pencils" owner="pencils_update" />
 		<entry type="pinned" name="evaporation" owner="traces_update" />
 		<entry type="pinned" name="pencil_radius" owner="pencils_update" />
@@ -188,9 +183,9 @@
 		<entry type="pinned" name="omega" owner="pencils_update" />
 		<entry type="pinned" name="domega" owner="pencils_update" />
 		<entry type="camera" fp="false">
-			<distance>3</distance>
-			<pitch>22</pitch>
-			<yaw>276</yaw>
+			<distance>2</distance>
+			<pitch>42</pitch>
+			<yaw>239</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
