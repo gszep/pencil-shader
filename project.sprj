@@ -12,19 +12,36 @@
 			<rendertexture name="normals" />
 			<rendertexture name="depth" />
 			<items>
-				<item name="cube" type="geometry">
+				<item name="cube1" type="geometry">
 					<type>Cube</type>
 					<width>1</width>
 					<height>1</height>
 					<depth>1</depth>
+					<x>1</x>
+					<y>2</y>
+					<z>-2</z>
+					<topology>TriangleList</topology>
+				</item>
+				<item name="cube2" type="geometry">
+					<type>Cube</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<scaleX>2</scaleX>
+					<scaleY>2</scaleY>
+					<scaleZ>2</scaleZ>
+					<roll>5.23598766</roll>
+					<pitch>0.52359879</pitch>
+					<yaw>1.04719758</yaw>
+					<x>-1</x>
 					<topology>TriangleList</topology>
 				</item>
 			</items>
 			<itemvalues />
 			<variables>
-				<variable type="float4x4" name="view_projection" system="ViewProjection" />
 				<variable type="float4x4" name="geometry_transform" system="GeometryTransform" />
 				<variable type="float3" name="camera_position" system="CameraPosition3" />
+				<variable type="float4x4" name="view_projection" system="ViewProjection" />
 			</variables>
 			<macros />
 		</pass>
@@ -52,7 +69,7 @@
 				<variable type="float2" name="viewport_size" system="ViewportSize" />
 				<variable type="float" name="edge_thickness">
 					<row>
-						<value>12.5500002</value>
+						<value>2.81999993</value>
 					</row>
 				</variable>
 			</variables>
@@ -91,7 +108,7 @@
 				<variable type="float" name="time" system="Time" />
 				<variable type="float" name="omega">
 					<row>
-						<value>7.57999992</value>
+						<value>4.78000021</value>
 					</row>
 				</variable>
 				<variable type="float" name="domega">
@@ -174,6 +191,7 @@
 	</objects>
 	<cameras />
 	<settings>
+		<entry type="property" name="gbuffer" item="pipe" />
 		<entry type="pinned" name="edge_thickness" owner="edges" />
 		<entry type="pinned" name="num_pencils" owner="pencils_update" />
 		<entry type="pinned" name="evaporation" owner="traces_update" />
@@ -182,9 +200,9 @@
 		<entry type="pinned" name="omega" owner="pencils_update" />
 		<entry type="pinned" name="domega" owner="pencils_update" />
 		<entry type="camera" fp="false">
-			<distance>4</distance>
-			<pitch>28</pitch>
-			<yaw>309</yaw>
+			<distance>15</distance>
+			<pitch>52</pitch>
+			<yaw>327</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
