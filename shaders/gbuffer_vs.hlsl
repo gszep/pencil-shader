@@ -4,6 +4,7 @@ cbuffer variables : register(b0)
 	float4x4 projection;
 	float4x4 geometry_transform;
 	float3 camera_position;
+	float time;
 };
 
 struct vertex
