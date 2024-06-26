@@ -1,6 +1,7 @@
 cbuffer variables : register(b0)
 {
-	float4x4 view_projection;
+	float4x4 view;
+	float4x4 projection;
 	float4x4 geometry_transform;
 	float3 camera_position;
 };
@@ -13,8 +14,7 @@ struct vertex
 
 struct gbuffer
 {
-	float4 screen_position : SV_POSITION;
-	float4 world_position : COLOR;
+	float4 position : SV_POSITION;
 	float4 normal : NORMAL;
 	float4 depth : COLOR;
 };
@@ -23,14 +23,14 @@ gbuffer main(vertex input)
 {
 	gbuffer output = (gbuffer)0;
 
-	output.world_position = geometry_transform * float4(input.position, 1.0);
+	float4 world_position = geometry_transform * float4(input.position, 1.0);
 	output.normal = geometry_transform * float4(input.normal, 0.0);
 
-	output.screen_position = view_projection * output.world_position;
-	output.normal = view_projection * output.normal;
+	float4 view_position = view * world_position;
+	output.position = projection * view_position;
 
-	output.normal = float4(output.normal.xyz, 1);
-	output.depth = dot(normalize(output.world_position.xyz), normalize(camera_position));
+	output.normal = view * output.normal;
+	output.depth = dot(normalize(world_position.xyz), normalize(camera_position));
 
 	return output;
 }

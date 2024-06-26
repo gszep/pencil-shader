@@ -27,6 +27,7 @@ RWTexture2D<float4> traces : register(u1);
 SamplerState sampling_state : register(s0);
 Texture2D edges : register(t0);
 Texture2D normals : register(t1);
+Texture2D depth : register(t2);
 
 // Hash function www.cs.ubc.ca/~rbridson/docs/schechter-sca08-turbulence.pdf
 uint hash(uint state)
@@ -45,7 +46,7 @@ float random_uniform(uint state)
 	return state / 4294967295.0;
 }
 
-float follow(Pencil pencil, Texture2D signal)
+float follow(Pencil pencil, Texture2D signal, float4 color = float4(0.33, 0.33, 0.33, 0))
 {
 	float2 uv = d * pencil.position;
 
@@ -54,8 +55,10 @@ float follow(Pencil pencil, Texture2D signal)
 	{
 		for (int r = 1; r <= 5; r++)
 		{
-			gradient += signal.Sample(sampling_state, uv + r * float2(cos(pencil.angle + angle), sin(pencil.angle + angle)) * d);
-			gradient -= signal.Sample(sampling_state, uv + r * float2(cos(pencil.angle - angle), sin(pencil.angle - angle)) * d);
+			float4 left_sample = signal.Sample(sampling_state, uv + r * float2(cos(pencil.angle + angle), sin(pencil.angle + angle)) * d);
+			float4 right_sample = signal.Sample(sampling_state, uv + r * float2(cos(pencil.angle - angle), sin(pencil.angle - angle)) * d);
+			gradient += dot(left_sample, color);
+			gradient -= dot(right_sample, color);
 		}
 	}
 
@@ -76,8 +79,34 @@ Pencil move(Pencil pencil, uint state)
 	return pencil;
 }
 
+float gauss(float sigma, int x, int y)
+{
+	return exp(-(x * x + y * y) / (2 * sigma * sigma));
+};
+
+float gaussian_blur(Texture2D tex, float2 uv, float sigma = 5.0)
+{
+	float blurred_value = 0;
+	float normalisation = 0;
+
+	for (int i = -10; i <= 10; i++)
+	{
+		for (int j = -10; j <= 10; j++)
+		{
+			float weight = gauss(sigma, i, j);
+			float4 color = tex.Sample(sampling_state, uv + float2(i, j) * d);
+
+			blurred_value += any(color) * weight;
+			normalisation += weight;
+		}
+	}
+	return blurred_value / normalisation;
+};
+
 void draw(Pencil pencil)
 {
+	float4 color = gaussian_blur(normals, pencil.position * d);
+
 	for (int y = max(0, int(pencil.position.y - pencil_radius)); y < min(height, int(pencil.position.y + pencil_radius)); y++)
 	{
 		for (int x = max(0, int(pencil.position.x - pencil_radius)); x < min(width, int(pencil.position.x + pencil_radius)); x++)
@@ -86,7 +115,7 @@ void draw(Pencil pencil)
 			if (length(p - pencil.position) < pencil_radius)
 			{
 				float2 uv = p / float2(width, height);
-				traces[p] = 1;
+				traces[p] = color;
 			}
 		}
 	}
