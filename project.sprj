@@ -70,7 +70,7 @@
 				<variable type="float2" name="viewport_size" system="ViewportSize" />
 				<variable type="float" name="edge_thickness">
 					<row>
-						<value>8.94999981</value>
+						<value>8</value>
 					</row>
 				</variable>
 			</variables>
@@ -98,18 +98,18 @@
 				</variable>
 				<variable type="float" name="pencil_radius">
 					<row>
-						<value>1.54999995</value>
+						<value>1.46000004</value>
 					</row>
 				</variable>
 				<variable type="float" name="speed">
 					<row>
-						<value>98.4700012</value>
+						<value>100</value>
 					</row>
 				</variable>
 				<variable type="float" name="time" system="Time" />
 				<variable type="float" name="omega">
 					<row>
-						<value>4</value>
+						<value>6.94000006</value>
 					</row>
 				</variable>
 				<variable type="float" name="domega">
@@ -137,7 +137,7 @@
 				<variable type="float" name="delta" system="TimeDelta" />
 				<variable type="float" name="evaporation">
 					<row>
-						<value>0.430000007</value>
+						<value>1.01999998</value>
 					</row>
 				</variable>
 			</variables>
@@ -172,6 +172,7 @@
 		<object type="rendertexture" name="normals" format="R32G32B32A32_FLOAT" rsize="1.000000,1.000000" clear="true">
 			<bind slot="0" name="edges" />
 			<bind slot="1" name="pencils_update" />
+			<bind slot="0" name="traces_update" />
 			<bind slot="1" name="postprocessing" />
 		</object>
 		<object type="rendertexture" name="depth" format="R32G32B32A32_FLOAT" rsize="1.000000,1.000000" clear="true">
@@ -193,7 +194,6 @@
 	</objects>
 	<cameras />
 	<settings>
-		<entry type="property" name="pencils_update" item="pipe" />
 		<entry type="pinned" name="edge_thickness" owner="edges" />
 		<entry type="pinned" name="num_pencils" owner="pencils_update" />
 		<entry type="pinned" name="evaporation" owner="traces_update" />
@@ -202,9 +202,9 @@
 		<entry type="pinned" name="omega" owner="pencils_update" />
 		<entry type="pinned" name="domega" owner="pencils_update" />
 		<entry type="camera" fp="false">
-			<distance>9</distance>
-			<pitch>-89</pitch>
-			<yaw>250</yaw>
+			<distance>14</distance>
+			<pitch>2</pitch>
+			<yaw>85</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />

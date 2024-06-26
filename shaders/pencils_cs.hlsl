@@ -46,39 +46,6 @@ float random_uniform(uint state)
 	return state / 4294967295.0;
 }
 
-float follow(Pencil pencil, Texture2D signal, float4 color = float4(0.33, 0.33, 0.33, 0))
-{
-	float2 uv = d * pencil.position;
-
-	float gradient = 0;
-	for (float angle = 0.0; angle <= 0.785; angle += 0.1)
-	{
-		for (int r = 1; r <= 5; r++)
-		{
-			float4 left_sample = signal.Sample(sampling_state, uv + r * float2(cos(pencil.angle + angle), sin(pencil.angle + angle)) * d);
-			float4 right_sample = signal.Sample(sampling_state, uv + r * float2(cos(pencil.angle - angle), sin(pencil.angle - angle)) * d);
-			gradient += dot(left_sample, color);
-			gradient -= dot(right_sample, color);
-		}
-	}
-
-	return gradient;
-}
-
-Pencil move(Pencil pencil, uint state)
-{
-
-	float random = 2 * random_uniform(state) - 1;
-	float turn_angle = follow(pencil, edges);
-	pencil.angle += turn_angle * delta;
-	pencil.angle += omega * random * delta;
-
-	float2 velocity = float2(cos(pencil.angle), sin(pencil.angle));
-	pencil.position += speed * velocity * delta;
-
-	return pencil;
-}
-
 float gauss(float sigma, int x, int y)
 {
 	return exp(-(x * x + y * y) / (2 * sigma * sigma));
@@ -103,16 +70,78 @@ float gaussian_blur(Texture2D tex, float2 uv, float sigma = 5.0)
 	return blurred_value / normalisation;
 };
 
+float follow(Pencil pencil, Texture2D signal, float4 color = float4(0.33, 0.33, 0.33, 0))
+{
+	float2 uv = d * pencil.position;
+
+	float gradient = 0;
+	for (float angle = 0.0; angle <= 0.785; angle += 0.1)
+	{
+		for (int r = 1; r <= 5; r++)
+		{
+			float4 left_sample = signal.Sample(sampling_state, uv + r * float2(cos(pencil.angle + angle), sin(pencil.angle + angle)) * d);
+			float4 right_sample = signal.Sample(sampling_state, uv + r * float2(cos(pencil.angle - angle), sin(pencil.angle - angle)) * d);
+			gradient += dot(left_sample, color);
+			gradient -= dot(right_sample, color);
+		}
+	}
+
+	return gradient;
+}
+
+Pencil move(Pencil pencil, uint state)
+{
+	// respawn background pencils
+	if (gaussian_blur(normals, pencil.position * d) < random_uniform(state))
+	{
+		state = hash(state);
+
+		float x = random_uniform(state) * width;
+		state = hash(state);
+		float y = random_uniform(state) * height;
+		state = hash(state);
+
+		pencil.position = float2(x, y);
+	}
+
+	float speed_factor = 1;
+	float2 uv = pencil.position * d;
+
+	float4 normal = normals.Sample(sampling_state, uv);
+	float4 edge = edges.Sample(sampling_state, uv);
+
+	if (normal.a > 0 && !any(edge > 0.5))
+	{
+		pencil.angle = atan2(normal.y, -normal.x);
+		speed_factor = 2;
+	}
+
+	// follow edges
+	float turn_angle = follow(pencil, edges);
+	pencil.angle += turn_angle * delta;
+
+	// angular noise
+	pencil.angle += omega * (2 * random_uniform(state) - 1) * delta;
+	state = hash(state);
+
+	// update position
+	float2 velocity = speed_factor * float2(cos(pencil.angle), sin(pencil.angle));
+	pencil.position += speed * velocity * delta;
+
+	return pencil;
+}
+
 void draw(Pencil pencil)
 {
 	float4 color = gaussian_blur(normals, pencil.position * d);
+	float strength = pencil_radius * max(1, 4 * log(depth.Sample(sampling_state, pencil.position * d).r + 1));
 
-	for (int y = max(0, int(pencil.position.y - pencil_radius)); y < min(height, int(pencil.position.y + pencil_radius)); y++)
+	for (int y = max(0, int(pencil.position.y - strength)); y < min(height, int(pencil.position.y + strength)); y++)
 	{
-		for (int x = max(0, int(pencil.position.x - pencil_radius)); x < min(width, int(pencil.position.x + pencil_radius)); x++)
+		for (int x = max(0, int(pencil.position.x - strength)); x < min(width, int(pencil.position.x + strength)); x++)
 		{
 			float2 p = float2(x, y);
-			if (length(p - pencil.position) < pencil_radius)
+			if (length(p - pencil.position) < strength)
 			{
 				float2 uv = p / float2(width, height);
 				traces[p] = color;
