@@ -6,7 +6,6 @@ cbuffer variables : register(b0)
 	float pencil_radius;
 	float speed;
 	float omega;
-	float domega;
 	float time;
 	float delta;
 };

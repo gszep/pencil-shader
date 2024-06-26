@@ -3,10 +3,15 @@ cbuffer variables : register(b0)
 	int width;
 	int height;
 	float delta;
+	float2 viewport_size;
 	float evaporation;
 };
 
+static const float2 d = 1 / float2(width, height);
+
 RWTexture2D<float4> traces : register(u0);
+Texture2D normals : register(t0);
+SamplerState state : register(s0);
 
 [numthreads(8, 8, 1)] void main(uint3 id : SV_DispatchThreadID)
 {
@@ -14,6 +19,10 @@ RWTexture2D<float4> traces : register(u0);
 	{
 		return;
 	}
-	float4 trace = max(0, traces[id.xy] - evaporation * delta);
+
+	float4 foreground = any(normals.Sample(state, id.xy * d));
+	float rate = foreground ? evaporation : 5 * evaporation;
+
+	float4 trace = max(0, traces[id.xy] - rate * delta);
 	traces[id.xy] = trace;
 }

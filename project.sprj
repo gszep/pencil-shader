@@ -112,11 +112,6 @@
 						<value>6.94000006</value>
 					</row>
 				</variable>
-				<variable type="float" name="domega">
-					<row>
-						<value>0</value>
-					</row>
-				</variable>
 			</variables>
 			<macros />
 		</pass>
@@ -137,9 +132,10 @@
 				<variable type="float" name="delta" system="TimeDelta" />
 				<variable type="float" name="evaporation">
 					<row>
-						<value>1.01999998</value>
+						<value>0.5</value>
 					</row>
 				</variable>
+				<variable type="float2" name="viewport_size" system="ViewportSize" />
 			</variables>
 			<macros />
 		</pass>
@@ -194,17 +190,17 @@
 	</objects>
 	<cameras />
 	<settings>
+		<entry type="property" name="traces_update" item="pipe" />
 		<entry type="pinned" name="edge_thickness" owner="edges" />
 		<entry type="pinned" name="num_pencils" owner="pencils_update" />
-		<entry type="pinned" name="evaporation" owner="traces_update" />
 		<entry type="pinned" name="pencil_radius" owner="pencils_update" />
 		<entry type="pinned" name="speed" owner="pencils_update" />
 		<entry type="pinned" name="omega" owner="pencils_update" />
-		<entry type="pinned" name="domega" owner="pencils_update" />
+		<entry type="pinned" name="evaporation" owner="traces_update" />
 		<entry type="camera" fp="false">
-			<distance>14</distance>
-			<pitch>2</pitch>
-			<yaw>85</yaw>
+			<distance>17</distance>
+			<pitch>-33</pitch>
+			<yaw>306</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
