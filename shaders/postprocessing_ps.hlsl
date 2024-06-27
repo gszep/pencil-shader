@@ -20,10 +20,6 @@ render_targets main(screen input)
 	render_targets output = (render_targets)0;
 	input.uv.y = 1 - input.uv.y;
 
-	output.viewport += traces.Sample(state, input.uv);
-	// output.viewport += normals.Sample(state, input.uv);
-	// output.viewport += depth.Sample(state, input.uv);
-	// output.viewport += edges.Sample(state, input.uv);
-
+	output.viewport = 1 - traces.Sample(state, input.uv);
 	return output;
 }

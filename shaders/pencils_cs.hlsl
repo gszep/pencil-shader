@@ -111,13 +111,13 @@ Pencil move(Pencil pencil, uint state)
 
 	if (normal.a > 0 && !any(edge > 0.5))
 	{
-		pencil.angle = atan2(normal.y, -normal.x);
+		pencil.angle = atan2(normal.y, -abs(normal.z));
 		speed_factor = 2;
 	}
 
 	// follow edges
 	float turn_angle = follow(pencil, edges);
-	pencil.angle += turn_angle * delta;
+	pencil.angle += 3 * turn_angle * delta;
 
 	// angular noise
 	pencil.angle += omega * (2 * random_uniform(state) - 1) * delta;
@@ -133,7 +133,8 @@ Pencil move(Pencil pencil, uint state)
 void draw(Pencil pencil)
 {
 	float4 color = gaussian_blur(normals, pencil.position * d);
-	float strength = pencil_radius * max(1, 4 * log(depth.Sample(sampling_state, pencil.position * d).r + 1));
+	float depth_value = depth.Sample(sampling_state, pencil.position * d).r;
+	float strength = depth_value > 0 ? pencil_radius / (depth_value + 1) : pencil_radius;
 
 	for (int y = max(0, int(pencil.position.y - strength)); y < min(height, int(pencil.position.y + strength)); y++)
 	{
