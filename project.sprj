@@ -35,6 +35,13 @@
 					<x>-1</x>
 					<topology>TriangleList</topology>
 				</item>
+				<item name="sphere" type="geometry">
+					<type>Sphere</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<topology>TriangleList</topology>
+				</item>
 			</items>
 			<itemvalues />
 			<variables>
@@ -199,8 +206,8 @@
 		<entry type="pinned" name="evaporation" owner="traces_update" />
 		<entry type="camera" fp="false">
 			<distance>13</distance>
-			<pitch>23</pitch>
-			<yaw>4</yaw>
+			<pitch>18</pitch>
+			<yaw>290</yaw>
 			<roll>360</roll>
 		</entry>
 		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
